@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-lg font-semibold text-gray-900">LISA Insurtech</p>
-          <p className="text-sm text-gray-500">© 2024 LISA Insurtech. Built for Trust and Innovation.</p>
+          <p className="text-sm text-gray-500">© 2026 LISA Insurtech. Built for Trust and Innovation.</p>
         </div>
         <div className="flex flex-wrap gap-6 text-sm text-gray-500">
           <span>Privacy Policy</span>
