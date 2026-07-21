@@ -7,15 +7,16 @@ export default function ContestsPage() {
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 py-16 lg:grid-cols-2">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-teal-800">
-              Insurtech Competition
+              EILA 2026
             </span>
             <h1 className="mt-4 text-4xl font-extrabold leading-tight text-gray-900 sm:text-5xl">
-              Concurso: Detecta el Fraude Visible
+              Compite contra LISA
             </h1>
             <p className="mt-4 text-gray-600">
-              Pon a prueba tu agudeza visual y conocimientos técnicos. Identifica las
-              anomalías en los documentos de reclamación y demuestra que eres un experto
-              en prevención de fraude.
+              Pon a prueba tu agudeza visual e identifica las 3 adulteraciones en la
+              boleta de honorarios, y demuestra que eres un experto en la prevención del
+              fraude. Si identificas las opciones correctas estarás participando por el
+              sorteo de unos AirPods.
             </p>
           </div>
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-teal-700 via-teal-600 to-purple-800 p-10 text-white shadow-lg">

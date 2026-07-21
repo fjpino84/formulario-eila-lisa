@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function GraciasPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
@@ -92,25 +90,23 @@ export default function GraciasPage() {
       </div>
 
       <div className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-teal-800 via-teal-700 to-purple-800 p-10 text-white">
-        <div className="max-w-xl">
-          <h2 className="text-3xl font-extrabold">LISA detecta lo que el ojo humano ignora</h2>
-          <p className="mt-4 text-teal-100">
-            Nuestra tecnología de IA y análisis de grafos identifica patrones complejos en
-            microsegundos, asegurando que solo los siniestros legítimos sean procesados.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/contests"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900"
-            >
-              Ver Reporte Completo →
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-5 py-2.5 text-sm font-semibold text-white"
-            >
-              Saber más
-            </Link>
+        <h2 className="text-3xl font-extrabold">
+          Hacemos <span className="font-black">visible</span> el fraude invisible
+        </h2>
+        <p className="mt-3 text-teal-100">Nuestros tres pilares de detección de fraude son:</p>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-xl bg-white/10 p-5">
+            <span className="text-3xl">🔍</span>
+            <p className="mt-3 font-semibold">Análisis Forense Documental</p>
+          </div>
+          <div className="rounded-xl bg-white/10 p-5">
+            <span className="text-3xl">🌐</span>
+            <p className="mt-3 font-semibold">Validación con Fuentes Externas</p>
+          </div>
+          <div className="rounded-xl bg-white/10 p-5">
+            <span className="text-3xl">📊</span>
+            <p className="mt-3 font-semibold">Análisis de Patrones de Comportamiento</p>
           </div>
         </div>
       </div>

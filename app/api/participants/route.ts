@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 import { isValidSubmission } from "@/lib/contest";
+import { sendPushToAll } from "@/lib/push";
 
 interface CreateParticipantBody {
   fullName: string;
@@ -45,7 +46,29 @@ export async function POST(request: NextRequest) {
     ],
   });
 
+  notifyNewSubmission(fullName.trim(), company.trim()).catch((error) =>
+    console.error("Push notification failed:", error)
+  );
+
   return NextResponse.json({ id: Number(result.lastInsertRowid), isValid }, { status: 201 });
+}
+
+async function notifyNewSubmission(fullName: string, company: string): Promise<void> {
+  await sendPushToAll({
+    title: "Nueva inscripción",
+    body: `${fullName} (${company}) se acaba de inscribir.`,
+  });
+
+  const db = getDb();
+  const totalRow = await db.execute("SELECT COUNT(*) as count FROM participants");
+  const total = Number(totalRow.rows[0].count);
+
+  if (total === 100) {
+    await sendPushToAll({
+      title: "🎉 ¡100 formularios completados!",
+      body: "El concurso ya superó los 100 participantes.",
+    });
+  }
 }
 
 export async function GET(request: NextRequest) {

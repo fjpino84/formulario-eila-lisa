@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import StatCard from "@/components/StatCard";
 import ParticipantTable, { Participant } from "@/components/ParticipantTable";
+import PushNotificationsButton from "@/components/PushNotificationsButton";
 
 interface ApiResponse {
   participants: Participant[];
@@ -64,26 +65,27 @@ export default function AdminPage() {
     data && data.total > 0 ? ((data.validCount / data.total) * 100).toFixed(1) : "0.0";
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-4xl font-extrabold text-gray-900">Contest Management</h1>
-          <p className="mt-2 max-w-xl text-gray-600">
+          <h1 className="text-2xl font-extrabold text-gray-900 sm:text-4xl">Contest Management</h1>
+          <p className="mt-2 max-w-xl text-sm text-gray-600 sm:text-base">
             Manage participants, track valid submissions, and fairly select the contest
             winner for the LISA Insurtech Innovation Awards.
           </p>
         </div>
-        <div className="flex flex-shrink-0 gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-shrink-0">
+          <PushNotificationsButton />
           <a
             href="/api/participants/export"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700"
           >
             ⭳ Descargar Excel
           </a>
           <button
             onClick={handleDrawWinner}
             disabled={drawing}
-            className="inline-flex items-center gap-2 rounded-lg bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
           >
             ✨ {drawing ? "Eligiendo..." : "Elegir Ganador al Azar"}
           </button>
@@ -113,7 +115,7 @@ export default function AdminPage() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-gray-100 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <h2 className="text-lg font-bold text-gray-900">Participant Roster</h2>
           <input
             type="text"
@@ -133,11 +135,11 @@ export default function AdminPage() {
           <ParticipantTable participants={data?.participants ?? []} />
         )}
 
-        <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4 text-sm text-gray-500">
+        <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-4 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span>
-            Showing {(data?.participants.length ?? 0) === 0 ? 0 : (page - 1) * (data?.pageSize ?? 10) + 1}{" "}
-            to {(page - 1) * (data?.pageSize ?? 10) + (data?.participants.length ?? 0)} of{" "}
-            {data?.filteredTotal ?? 0} participants
+            {(data?.participants.length ?? 0) === 0 ? 0 : (page - 1) * (data?.pageSize ?? 10) + 1}
+            –{(page - 1) * (data?.pageSize ?? 10) + (data?.participants.length ?? 0)} de{" "}
+            {data?.filteredTotal ?? 0}
           </span>
           <div className="flex items-center gap-2">
             <button
