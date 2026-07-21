@@ -130,7 +130,7 @@ export default function AdminPage() {
         {loading ? (
           <p className="px-6 py-10 text-center text-sm text-gray-500">Cargando...</p>
         ) : (
-          <ParticipantTable participants={data?.participants ?? []} />
+          <ParticipantTable participants={data?.participants ?? []} onDeleted={() => load()} />
         )}
 
         <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-4 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">

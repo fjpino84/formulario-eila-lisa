@@ -25,7 +25,8 @@ export function proxy(request: NextRequest) {
   // El listado GET de participantes también es solo para el admin;
   // el POST de creación (usado por el formulario público) queda libre.
   const isProtectedApi =
-    pathname === "/api/participants" && request.method === "GET";
+    (pathname === "/api/participants" && request.method === "GET") ||
+    (pathname.startsWith("/api/participants/") && request.method === "DELETE");
   const isAdminPage = pathname.startsWith("/admin");
 
   if ((isAdminPage || isProtectedApi) && !isAuthorized(request)) {

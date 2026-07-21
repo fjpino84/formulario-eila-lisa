@@ -77,7 +77,9 @@ export default function ContestForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Participa Ahora</h2>
+        <h2 className="text-xl font-bold text-gray-900">
+          Participa Ahora <span className="text-sm font-normal text-gray-500">(todos los campos son obligatorios)</span>
+        </h2>
         <div className="mt-3 border-b border-gray-200" />
       </div>
 

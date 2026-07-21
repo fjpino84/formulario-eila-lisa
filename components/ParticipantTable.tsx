@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 export interface Participant {
   id: number;
   fullName: string;
@@ -11,11 +15,26 @@ export interface Participant {
 
 interface ParticipantTableProps {
   participants: Participant[];
+  onDeleted: (id: number) => void;
 }
 
-export default function ParticipantTable({ participants }: ParticipantTableProps) {
+export default function ParticipantTable({ participants, onDeleted }: ParticipantTableProps) {
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
   if (participants.length === 0) {
     return <p className="px-6 py-10 text-center text-sm text-gray-500">Sin participantes que mostrar.</p>;
+  }
+
+  async function handleDelete(p: Participant) {
+    if (!confirm(`¿Eliminar a ${p.fullName}? Esta acción no se puede deshacer.`)) return;
+
+    setDeletingId(p.id);
+    try {
+      const res = await fetch(`/api/participants/${p.id}`, { method: "DELETE" });
+      if (res.ok) onDeleted(p.id);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -37,11 +56,20 @@ export default function ParticipantTable({ participants }: ParticipantTableProps
               </p>
               <p className="mt-1 truncate text-xs text-gray-500">{p.phone}</p>
               <p className="truncate text-xs text-gray-500">{p.email}</p>
-              {p.isWinner && (
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                  🏆 Winner
-                </span>
-              )}
+              <div className="mt-2 flex items-center gap-2">
+                {p.isWinner && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                    🏆 Winner
+                  </span>
+                )}
+                <button
+                  onClick={() => handleDelete(p)}
+                  disabled={deletingId === p.id}
+                  className="ml-auto text-xs font-semibold text-red-600 disabled:opacity-50"
+                >
+                  {deletingId === p.id ? "Eliminando..." : "🗑 Eliminar"}
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -58,6 +86,7 @@ export default function ParticipantTable({ participants }: ParticipantTableProps
               <th className="px-6 py-3 font-semibold">Contact</th>
               <th className="px-6 py-3 font-semibold">Valid Answers</th>
               <th className="px-6 py-3 font-semibold">Winner</th>
+              <th className="px-6 py-3 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -86,6 +115,15 @@ export default function ParticipantTable({ participants }: ParticipantTableProps
                       🏆 Winner
                     </span>
                   )}
+                </td>
+                <td className="px-6 py-4">
+                  <button
+                    onClick={() => handleDelete(p)}
+                    disabled={deletingId === p.id}
+                    className="text-xs font-semibold text-red-600 disabled:opacity-50"
+                  >
+                    {deletingId === p.id ? "Eliminando..." : "🗑 Eliminar"}
+                  </button>
                 </td>
               </tr>
             ))}
