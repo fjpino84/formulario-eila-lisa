@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { getDb, ParticipantRow } from "@/lib/db";
+import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 
 export async function POST() {
+  await ensureSchema();
   const db = getDb();
 
-  const eligible = db
-    .prepare("SELECT * FROM participants WHERE is_valid = 1")
-    .all() as unknown as ParticipantRow[];
+  const eligibleResult = await db.execute("SELECT * FROM participants WHERE is_valid = 1");
+  const eligible = eligibleResult.rows as unknown as ParticipantRow[];
 
   if (eligible.length === 0) {
     return NextResponse.json(
@@ -17,8 +17,11 @@ export async function POST() {
 
   const winner = eligible[Math.floor(Math.random() * eligible.length)];
 
-  db.exec("UPDATE participants SET is_winner = 0");
-  db.prepare("UPDATE participants SET is_winner = 1 WHERE id = ?").run(winner.id);
+  await db.execute("UPDATE participants SET is_winner = 0");
+  await db.execute({
+    sql: "UPDATE participants SET is_winner = 1 WHERE id = ?",
+    args: [winner.id],
+  });
 
   return NextResponse.json({
     winner: {

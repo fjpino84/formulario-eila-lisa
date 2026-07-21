@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import ExcelJS from "exceljs";
-import { getDb, ParticipantRow } from "@/lib/db";
+import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 
 export async function GET() {
+  await ensureSchema();
   const db = getDb();
-  const rows = db
-    .prepare("SELECT * FROM participants ORDER BY created_at DESC")
-    .all() as unknown as ParticipantRow[];
+  const result = await db.execute("SELECT * FROM participants ORDER BY created_at DESC");
+  const rows = result.rows as unknown as ParticipantRow[];
 
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Participants");

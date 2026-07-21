@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, ParticipantRow } from "@/lib/db";
+import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 import { isValidSubmission } from "@/lib/contest";
 
 interface CreateParticipantBody {
@@ -28,23 +28,24 @@ export async function POST(request: NextRequest) {
   }
 
   const isValid = isValidSubmission(selectedAnswers);
+  await ensureSchema();
   const db = getDb();
 
-  const stmt = db.prepare(`
-    INSERT INTO participants (full_name, company, position, phone, email, selected_answers, is_valid)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-  const result = stmt.run(
-    fullName.trim(),
-    company.trim(),
-    position.trim(),
-    phone.trim(),
-    email.trim(),
-    JSON.stringify(selectedAnswers),
-    isValid ? 1 : 0
-  );
+  const result = await db.execute({
+    sql: `INSERT INTO participants (full_name, company, position, phone, email, selected_answers, is_valid)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      fullName.trim(),
+      company.trim(),
+      position.trim(),
+      phone.trim(),
+      email.trim(),
+      JSON.stringify(selectedAnswers),
+      isValid ? 1 : 0,
+    ],
+  });
 
-  return NextResponse.json({ id: result.lastInsertRowid, isValid }, { status: 201 });
+  return NextResponse.json({ id: Number(result.lastInsertRowid), isValid }, { status: 201 });
 }
 
 export async function GET(request: NextRequest) {
@@ -53,27 +54,26 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, Number(searchParams.get("page") ?? "1"));
   const pageSize = 10;
 
+  await ensureSchema();
   const db = getDb();
 
-  const totalRow = db.prepare("SELECT COUNT(*) as count FROM participants").get() as {
-    count: number;
-  };
-  const validRow = db
-    .prepare("SELECT COUNT(*) as count FROM participants WHERE is_valid = 1")
-    .get() as { count: number };
+  const totalRow = await db.execute("SELECT COUNT(*) as count FROM participants");
+  const validRow = await db.execute("SELECT COUNT(*) as count FROM participants WHERE is_valid = 1");
 
   const whereClause = search ? "WHERE full_name LIKE ? OR company LIKE ?" : "";
   const params = search ? [`%${search}%`, `%${search}%`] : [];
 
-  const filteredTotalRow = db
-    .prepare(`SELECT COUNT(*) as count FROM participants ${whereClause}`)
-    .get(...params) as { count: number };
+  const filteredTotalRow = await db.execute({
+    sql: `SELECT COUNT(*) as count FROM participants ${whereClause}`,
+    args: params,
+  });
 
-  const rows = db
-    .prepare(
-      `SELECT * FROM participants ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`
-    )
-    .all(...params, pageSize, (page - 1) * pageSize) as unknown as ParticipantRow[];
+  const rowsResult = await db.execute({
+    sql: `SELECT * FROM participants ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+    args: [...params, pageSize, (page - 1) * pageSize],
+  });
+
+  const rows = rowsResult.rows as unknown as ParticipantRow[];
 
   return NextResponse.json({
     participants: rows.map((row) => ({
@@ -88,9 +88,9 @@ export async function GET(request: NextRequest) {
       isWinner: row.is_winner === 1,
       createdAt: row.created_at,
     })),
-    total: totalRow.count,
-    validCount: validRow.count,
-    filteredTotal: filteredTotalRow.count,
+    total: Number(totalRow.rows[0].count),
+    validCount: Number(validRow.rows[0].count),
+    filteredTotal: Number(filteredTotalRow.rows[0].count),
     page,
     pageSize,
   });
