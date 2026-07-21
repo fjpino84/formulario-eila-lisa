@@ -1,8 +1,8 @@
 import { Resend } from "resend";
 
 const ADMIN_EMAIL = "francisco@lisainsurtech.com";
-const FROM_ADMIN = "LISA Insurtech <notificaciones@ganalealisa.lat>";
-const FROM_PARTICIPANT = "LISA Insurtech <no-reply@ganalealisa.lat>";
+const FROM_ADMIN = "Gánale a LISA <notificaciones@ganalealisa.lat>";
+const FROM_PARTICIPANT = "Gánale a LISA <no-reply@ganalealisa.lat>";
 
 function getClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
