@@ -1,12 +1,8 @@
 import { Resend } from "resend";
 
 const ADMIN_EMAIL = "francisco@lisainsurtech.com";
-
-// TODO: una vez verificado el dominio propio en Resend, cambiar estos
-// remitentes a algo@lisainsurtech.com. Mientras tanto se usa el dominio
-// de prueba de Resend, que solo permite enviar al correo de la cuenta.
-const FROM_ADMIN = "LISA Insurtech <onboarding@resend.dev>";
-const FROM_PARTICIPANT = "LISA Insurtech <onboarding@resend.dev>";
+const FROM_ADMIN = "LISA Insurtech <notificaciones@ganalealisa.lat>";
+const FROM_PARTICIPANT = "LISA Insurtech <no-reply@ganalealisa.lat>";
 
 function getClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
