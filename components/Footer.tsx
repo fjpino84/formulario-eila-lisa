@@ -6,11 +6,8 @@ export default function Footer() {
           <p className="text-lg font-semibold text-gray-900">LISA Insurtech</p>
           <p className="text-sm text-gray-500">© 2026 LISA Insurtech. Built for Trust and Innovation.</p>
         </div>
-        <div className="flex flex-wrap gap-6 text-sm text-gray-500">
-          <span>Privacy Policy</span>
-          <span>Terms of Service</span>
-          <span>Security Compliance</span>
-          <span>Support</span>
+        <div className="text-sm text-gray-500">
+          <span>Creado por Francisco Pino</span>
         </div>
       </div>
     </footer>

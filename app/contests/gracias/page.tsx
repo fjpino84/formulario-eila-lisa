@@ -109,6 +109,18 @@ export default function GraciasPage() {
             <p className="mt-3 font-semibold">Análisis de Patrones de Comportamiento</p>
           </div>
         </div>
+
+        <p className="mt-8 text-center text-sm text-teal-100">
+          ¿Quieres conocer más?{" "}
+          <a
+            href="https://www.lisainsurtech.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-white underline"
+          >
+            haz click aquí
+          </a>
+        </p>
       </div>
     </div>
   );
