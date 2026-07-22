@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 import { isValidSubmission } from "@/lib/contest";
 import { sendAdminNotification, sendNewParticipantAlert, sendParticipantConfirmation } from "@/lib/email";
@@ -46,13 +47,15 @@ export async function POST(request: NextRequest) {
     ],
   });
 
-  notifyNewSubmission({
-    fullName: fullName.trim(),
-    position: position.trim(),
-    company: company.trim(),
-    phone: phone.trim(),
-    email: email.trim(),
-  }).catch((error) => console.error("Email notification failed:", error));
+  after(() =>
+    notifyNewSubmission({
+      fullName: fullName.trim(),
+      position: position.trim(),
+      company: company.trim(),
+      phone: phone.trim(),
+      email: email.trim(),
+    }).catch((error) => console.error("Email notification failed:", error))
+  );
 
   return NextResponse.json({ id: Number(result.lastInsertRowid), isValid }, { status: 201 });
 }
