@@ -77,7 +77,11 @@ function participantConfirmationHtml(fullName: string): string {
   return `
   <div style="font-family: Arial, Helvetica, sans-serif; max-width: 640px; margin: 0 auto; color: #1f2937;">
     <div style="text-align: center; padding: 32px 16px 8px;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 16px; background: #0d9488; color: #fff; font-size: 28px; line-height: 56px;">✓</div>
+      <table role="presentation" align="center" style="margin: 0 auto; border-collapse: collapse;">
+        <tr>
+          <td width="56" height="56" align="center" valign="middle" style="width: 56px; height: 56px; border-radius: 16px; background: #0d9488; color: #fff; font-size: 28px; text-align: center;">✓</td>
+        </tr>
+      </table>
       <h1 style="color: #115e59; font-size: 28px; margin: 16px 0 8px;">Muchas gracias por Participar</h1>
       <p style="color: #4b5563; max-width: 480px; margin: 0 auto;">
         Hola ${escapeHtml(fullName)}, haz detectado el Fraude <strong style="color:#6d28d9;">VISIBLE</strong>,
