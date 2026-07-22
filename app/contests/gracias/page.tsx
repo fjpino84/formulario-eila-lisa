@@ -122,6 +122,18 @@ export default function GraciasPage() {
           </a>
         </p>
       </div>
+
+      <p className="mt-8 text-center text-sm text-gray-500">
+        El ganador será comunicado el día 15 de agosto a través de nuestro sitio de LinkedIn.{" "}
+        <a
+          href="https://www.linkedin.com/company/lisainsurtech/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-teal-700 underline"
+        >
+          Síguenos en LinkedIn
+        </a>
+      </p>
     </div>
   );
 }
