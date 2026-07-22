@@ -22,6 +22,45 @@ export async function sendAdminNotification(subject: string, html: string): Prom
   });
 }
 
+export interface ParticipantSummary {
+  fullName: string;
+  position: string;
+  company: string;
+  phone: string;
+  email: string;
+}
+
+export async function sendNewParticipantAlert(participant: ParticipantSummary): Promise<void> {
+  await sendAdminNotification("Nueva inscripción", newParticipantAlertHtml(participant));
+}
+
+function newParticipantAlertHtml(p: ParticipantSummary): string {
+  const rows: [string, string][] = [
+    ["Nombre", p.fullName],
+    ["Cargo", p.position],
+    ["Empresa", p.company],
+    ["Teléfono", p.phone],
+    ["Mail", p.email],
+  ];
+
+  return `
+  <div style="font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 0 auto; color: #1f2937;">
+    <h2 style="color: #115e59; margin: 0 0 16px;">Nueva inscripción</h2>
+    <table role="presentation" width="100%" style="border-collapse: collapse;">
+      ${rows
+        .map(
+          ([label, value]) => `
+        <tr>
+          <td style="padding: 8px 12px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; width: 120px;">${escapeHtml(label)}</td>
+          <td style="padding: 8px 12px; color: #1f2937; border-bottom: 1px solid #e5e7eb;">${escapeHtml(value)}</td>
+        </tr>`
+        )
+        .join("")}
+    </table>
+  </div>
+  `;
+}
+
 export async function sendParticipantConfirmation(to: string, fullName: string): Promise<void> {
   const client = getClient();
   if (!client) return;

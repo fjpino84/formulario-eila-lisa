@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 import { isValidSubmission } from "@/lib/contest";
-import { sendAdminNotification, sendParticipantConfirmation } from "@/lib/email";
+import { sendAdminNotification, sendNewParticipantAlert, sendParticipantConfirmation } from "@/lib/email";
 
 interface CreateParticipantBody {
   fullName: string;
@@ -46,24 +46,27 @@ export async function POST(request: NextRequest) {
     ],
   });
 
-  notifyNewSubmission(fullName.trim(), company.trim(), email.trim()).catch((error) =>
-    console.error("Email notification failed:", error)
-  );
+  notifyNewSubmission({
+    fullName: fullName.trim(),
+    position: position.trim(),
+    company: company.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+  }).catch((error) => console.error("Email notification failed:", error));
 
   return NextResponse.json({ id: Number(result.lastInsertRowid), isValid }, { status: 201 });
 }
 
-async function notifyNewSubmission(
-  fullName: string,
-  company: string,
-  email: string
-): Promise<void> {
-  await sendAdminNotification(
-    "Nueva inscripción",
-    `<p>${fullName} (${company}) se acaba de inscribir.</p>`
-  );
+async function notifyNewSubmission(participant: {
+  fullName: string;
+  position: string;
+  company: string;
+  phone: string;
+  email: string;
+}): Promise<void> {
+  await sendNewParticipantAlert(participant);
 
-  await sendParticipantConfirmation(email, fullName);
+  await sendParticipantConfirmation(participant.email, participant.fullName);
 
   const db = getDb();
   const totalRow = await db.execute("SELECT COUNT(*) as count FROM participants");
