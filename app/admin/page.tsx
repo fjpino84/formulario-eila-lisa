@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import StatCard from "@/components/StatCard";
 import ParticipantTable, { Participant } from "@/components/ParticipantTable";
 
@@ -13,19 +13,7 @@ interface ApiResponse {
   pageSize: number;
 }
 
-interface LatestResponse {
-  total: number;
-  lastParticipant: { id: number; fullName: string; company: string } | null;
-}
-
-interface NewSignupToast {
-  id: number;
-  fullName: string;
-  company: string;
-}
-
 const CONTEST_CLOSE_DATE = new Date("2026-08-15T23:59:59");
-const POLL_INTERVAL_MS = 5000;
 
 export default function AdminPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
@@ -34,8 +22,6 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [drawing, setDrawing] = useState(false);
   const [winnerMessage, setWinnerMessage] = useState<string | null>(null);
-  const [signupToast, setSignupToast] = useState<NewSignupToast | null>(null);
-  const lastSeenIdRef = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,45 +36,6 @@ export default function AdminPage() {
   useEffect(() => {
     load();
   }, [load]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function poll() {
-      try {
-        const res = await fetch("/api/participants/latest");
-        if (!res.ok) return;
-        const json = (await res.json()) as LatestResponse;
-        if (cancelled || !json.lastParticipant) return;
-
-        if (lastSeenIdRef.current === null) {
-          lastSeenIdRef.current = json.lastParticipant.id;
-          return;
-        }
-
-        if (json.lastParticipant.id !== lastSeenIdRef.current) {
-          lastSeenIdRef.current = json.lastParticipant.id;
-          setSignupToast(json.lastParticipant);
-          load();
-        }
-      } catch {
-        // Silencioso: un fallo de polling puntual no debe interrumpir el admin.
-      }
-    }
-
-    poll();
-    const interval = setInterval(poll, POLL_INTERVAL_MS);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [load]);
-
-  useEffect(() => {
-    if (!signupToast) return;
-    const timeout = setTimeout(() => setSignupToast(null), 8000);
-    return () => clearTimeout(timeout);
-  }, [signupToast]);
 
   async function handleDrawWinner() {
     setDrawing(true);
@@ -118,27 +65,6 @@ export default function AdminPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      {signupToast && (
-        <div className="fixed inset-x-4 top-4 z-50 mx-auto max-w-sm rounded-xl border border-teal-200 bg-white p-4 shadow-lg sm:right-4 sm:left-auto">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🎉</span>
-            <div className="flex-1">
-              <p className="text-sm font-bold text-gray-900">Nueva inscripción</p>
-              <p className="text-sm text-gray-600">
-                {signupToast.fullName} ({signupToast.company})
-              </p>
-            </div>
-            <button
-              onClick={() => setSignupToast(null)}
-              className="text-gray-400 hover:text-gray-600"
-              aria-label="Cerrar"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-gray-900 sm:text-4xl">Contest Management</h1>
