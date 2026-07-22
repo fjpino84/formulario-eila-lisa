@@ -1,0 +1,21 @@
+{
+  "name": "Gánale a LISA",
+  "short_name": "Gánale a LISA",
+  "description": "Panel administrativo del concurso EILA 2026 - LISA Insurtech",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

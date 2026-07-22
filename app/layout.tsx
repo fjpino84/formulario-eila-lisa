@@ -6,6 +6,16 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "LISA Insurtech — Concurso Detecta el Fraude Visible",
   description: "Participa en el concurso de detección de fraude de LISA Insurtech.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Gánale a LISA",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
