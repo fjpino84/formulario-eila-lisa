@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import StatCard from "@/components/StatCard";
 import ParticipantTable, { Participant } from "@/components/ParticipantTable";
+import PushNotificationsButton from "@/components/PushNotificationsButton";
 
 interface ApiResponse {
   participants: Participant[];
@@ -74,6 +75,7 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-shrink-0">
+          <PushNotificationsButton />
           <a
             href="/api/participants/export"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700"

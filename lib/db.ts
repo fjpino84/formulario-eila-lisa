@@ -32,9 +32,9 @@ let schemaReady: Promise<void> | null = null;
 
 export function ensureSchema(): Promise<void> {
   if (!schemaReady) {
-    schemaReady = getDb()
-      .execute(
-        `
+    const db = getDb();
+    schemaReady = Promise.all([
+      db.execute(`
         CREATE TABLE IF NOT EXISTS participants (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           full_name TEXT NOT NULL,
@@ -47,9 +47,17 @@ export function ensureSchema(): Promise<void> {
           is_winner INTEGER NOT NULL DEFAULT 0,
           created_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
-      `
-      )
-      .then(() => undefined);
+      `),
+      db.execute(`
+        CREATE TABLE IF NOT EXISTS push_subscriptions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          endpoint TEXT NOT NULL UNIQUE,
+          p256dh TEXT NOT NULL,
+          auth TEXT NOT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+      `),
+    ]).then(() => undefined);
   }
   return schemaReady;
 }
@@ -64,5 +72,13 @@ export interface ParticipantRow {
   selected_answers: string;
   is_valid: number;
   is_winner: number;
+  created_at: string;
+}
+
+export interface PushSubscriptionRow {
+  id: number;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
   created_at: string;
 }

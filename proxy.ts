@@ -26,7 +26,8 @@ export function proxy(request: NextRequest) {
   // el POST de creación (usado por el formulario público) queda libre.
   const isProtectedApi =
     (pathname === "/api/participants" && request.method === "GET") ||
-    (pathname.startsWith("/api/participants/") && request.method === "DELETE");
+    (pathname.startsWith("/api/participants/") && request.method === "DELETE") ||
+    pathname.startsWith("/api/push/subscribe");
   const isAdminPage = pathname.startsWith("/admin");
 
   if ((isAdminPage || isProtectedApi) && !isAuthorized(request)) {
@@ -39,5 +40,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/participants", "/api/participants/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/participants",
+    "/api/participants/:path*",
+    "/api/push/:path*",
+  ],
 };

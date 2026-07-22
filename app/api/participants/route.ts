@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { getDb, ensureSchema, ParticipantRow } from "@/lib/db";
 import { isValidSubmission } from "@/lib/contest";
 import { sendAdminNotification, sendNewParticipantAlert, sendParticipantConfirmation } from "@/lib/email";
+import { sendPushToAll } from "@/lib/push";
 
 interface CreateParticipantBody {
   fullName: string;
@@ -70,6 +71,11 @@ async function notifyNewSubmission(participant: {
   await sendNewParticipantAlert(participant);
 
   await sendParticipantConfirmation(participant.email, participant.fullName);
+
+  await sendPushToAll({
+    title: "Nueva inscripción",
+    body: `${participant.fullName} (${participant.company})`,
+  });
 
   const db = getDb();
   const totalRow = await db.execute("SELECT COUNT(*) as count FROM participants");
