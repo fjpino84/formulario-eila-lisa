@@ -86,6 +86,11 @@ async function notifyNewSubmission(participant: {
       "🎉 ¡100 formularios completados!",
       "<p>El concurso ya superó los 100 participantes.</p>"
     );
+    await sendPushToAll({
+      title: "🎆🎉 ¡100 PARTICIPANTES! 🎉🎆",
+      body: "El concurso Gánale a LISA acaba de superar los 100 inscritos. ¡Vamos con todo!",
+      milestone: true,
+    });
   }
 }
 

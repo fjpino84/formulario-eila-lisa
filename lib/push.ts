@@ -35,7 +35,11 @@ export async function removeSubscription(endpoint: string): Promise<void> {
   });
 }
 
-export async function sendPushToAll(payload: { title: string; body: string }): Promise<void> {
+export async function sendPushToAll(payload: {
+  title: string;
+  body: string;
+  milestone?: boolean;
+}): Promise<void> {
   if (!configure()) return;
 
   await ensureSchema();
