@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import ChallengeCheckboxes from "@/components/ChallengeCheckboxes";
-import { REQUIRED_SELECTIONS } from "@/lib/contest";
+import { REQUIRED_SELECTIONS, isValidSubmission } from "@/lib/contest";
 
 interface FormState {
   fullName: string;
@@ -27,6 +27,8 @@ export default function ContestForm() {
   const [selected, setSelected] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [showRetryModal, setShowRetryModal] = useState(false);
 
   const isComplete =
     form.fullName.trim() !== "" &&
@@ -45,6 +47,12 @@ export default function ContestForm() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!isComplete || submitting) return;
+
+    if (attempt === 0 && !isValidSubmission(selected)) {
+      setAttempt(1);
+      setShowRetryModal(true);
+      return;
+    }
 
     setSubmitting(true);
     setError(null);
@@ -153,6 +161,29 @@ export default function ContestForm() {
         <span>▷</span>
         {submitting ? "Enviando..." : "Enviar Participación"}
       </button>
+
+      {showRetryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl">
+              🤔
+            </div>
+            <h3 className="mt-4 text-lg font-bold text-gray-900">
+              Parece que te has equivocado
+            </h3>
+            <p className="mt-2 text-sm text-gray-600">
+              Tienes una oportunidad más. Revisa tus respuestas y vuelve a intentarlo.
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowRetryModal(false)}
+              className="mt-5 w-full rounded-lg bg-teal-800 px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              Intentar de nuevo
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
