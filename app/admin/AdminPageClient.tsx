@@ -6,6 +6,7 @@ import StatCard from "@/components/StatCard";
 import ParticipantTable, { Participant } from "@/components/ParticipantTable";
 import PushNotificationsButton from "@/components/PushNotificationsButton";
 import Fireworks from "@/components/Fireworks";
+import WinnerDrawModal from "@/components/WinnerDrawModal";
 
 interface ApiResponse {
   participants: Participant[];
@@ -25,7 +26,9 @@ export default function AdminPageClient() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [drawing, setDrawing] = useState(false);
-  const [winnerMessage, setWinnerMessage] = useState<string | null>(null);
+  const [drawPhase, setDrawPhase] = useState<"spinning" | "revealed" | null>(null);
+  const [drawWinner, setDrawWinner] = useState<{ fullName: string; company: string } | null>(null);
+  const [drawError, setDrawError] = useState<string | null>(null);
   const [showFireworks, setShowFireworks] = useState(
     () => searchParams.get("celebrate") === "100"
   );
@@ -56,16 +59,29 @@ export default function AdminPageClient() {
 
   async function handleDrawWinner() {
     setDrawing(true);
-    setWinnerMessage(null);
+    setDrawPhase("spinning");
+    setDrawWinner(null);
+    setDrawError(null);
+
+    const MIN_SPIN_MS = 5000;
+    const startedAt = Date.now();
+
     try {
       const res = await fetch("/api/participants/winner", { method: "POST" });
       const json = await res.json();
+
+      const elapsed = Date.now() - startedAt;
+      if (elapsed < MIN_SPIN_MS) {
+        await new Promise((resolve) => setTimeout(resolve, MIN_SPIN_MS - elapsed));
+      }
+
       if (!res.ok) {
-        setWinnerMessage(json.error ?? "No se pudo elegir un ganador");
+        setDrawError(json.error ?? "No se pudo elegir un ganador");
       } else {
-        setWinnerMessage(`🎉 Ganador: ${json.winner.fullName} (${json.winner.company})`);
+        setDrawWinner({ fullName: json.winner.fullName, company: json.winner.company });
         load();
       }
+      setDrawPhase("revealed");
     } finally {
       setDrawing(false);
     }
@@ -83,6 +99,15 @@ export default function AdminPageClient() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       {showFireworks && <Fireworks onDone={() => setShowFireworks(false)} />}
+
+      {drawPhase && (
+        <WinnerDrawModal
+          phase={drawPhase}
+          winner={drawWinner}
+          error={drawError}
+          onClose={() => setDrawPhase(null)}
+        />
+      )}
 
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -109,12 +134,6 @@ export default function AdminPageClient() {
           </button>
         </div>
       </div>
-
-      {winnerMessage && (
-        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
-          {winnerMessage}
-        </div>
-      )}
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Total Participants" value={String(data?.total ?? "—")} hint="Actualizado en vivo" />
