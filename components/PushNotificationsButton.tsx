@@ -73,8 +73,10 @@ export default function PushNotificationsButton() {
       });
 
       setStatus("subscribed");
-    } catch {
-      setError("No se pudo activar las notificaciones en este dispositivo.");
+    } catch (err) {
+      console.error("Push activation failed:", err);
+      const message = err instanceof Error ? err.message : String(err);
+      setError(`No se pudo activar las notificaciones: ${message}`);
     }
   }
 
