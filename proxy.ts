@@ -1,41 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const REALM = "Admin";
+import { verifySessionToken, SESSION_COOKIE } from "@/lib/auth";
 
 function isAuthorized(request: NextRequest): boolean {
-  const header = request.headers.get("authorization");
-  if (!header?.startsWith("Basic ")) return false;
-
-  const decoded = Buffer.from(header.slice(6), "base64").toString("utf-8");
-  const separatorIndex = decoded.indexOf(":");
-  if (separatorIndex === -1) return false;
-
-  const user = decoded.slice(0, separatorIndex);
-  const pass = decoded.slice(separatorIndex + 1);
-
-  return (
-    user === process.env.ADMIN_USER &&
-    pass === process.env.ADMIN_PASSWORD
-  );
+  return verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
 }
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // El listado GET de participantes también es solo para el admin;
-  // el POST de creación (usado por el formulario público) queda libre.
-  const isProtectedApi =
-    (pathname === "/api/participants" && request.method === "GET") ||
-    (pathname.startsWith("/api/participants/") && request.method === "DELETE") ||
-    pathname.startsWith("/api/push/subscribe");
-  const isAdminPage = pathname.startsWith("/admin");
+  const isLoginPage = pathname === "/admin/login";
+  const isAdminPage = pathname.startsWith("/admin") && !isLoginPage;
 
-  if ((isAdminPage || isProtectedApi) && !isAuthorized(request)) {
-    return new NextResponse("Autenticación requerida", {
-      status: 401,
-      headers: { "WWW-Authenticate": `Basic realm="${REALM}"` },
-    });
+  // Todo lo de /api/participants* y /api/push* es solo para el admin,
+  // salvo el POST de creación en /api/participants (usado por el
+  // formulario público), que queda libre.
+  const isPublicSubmit = pathname === "/api/participants" && request.method === "POST";
+  const isProtectedApi =
+    (pathname.startsWith("/api/participants") || pathname.startsWith("/api/push")) &&
+    !isPublicSubmit;
+
+  if (!isAuthorized(request)) {
+    if (isAdminPage) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    if (isProtectedApi) {
+      return NextResponse.json({ error: "Autenticación requerida" }, { status: 401 });
+    }
   }
+
   return NextResponse.next();
 }
 
