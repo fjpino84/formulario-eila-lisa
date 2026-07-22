@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 interface WinnerDrawModalProps {
   phase: "spinning" | "revealed";
   winner: { fullName: string; company: string } | null;
@@ -7,7 +9,38 @@ interface WinnerDrawModalProps {
   onClose: () => void;
 }
 
+const SAMPLE_NAMES = [
+  "Ana Torres",
+  "Diego Ferrocchio",
+  "Luciana Tesón",
+  "Paula Barnatan",
+  "Francisco Pino",
+  "Camila Rojas",
+  "Martín Silva",
+  "Valentina Gómez",
+  "Sebastián Muñoz",
+  "Josefa Contreras",
+  "Rodrigo Vidal",
+  "Constanza Reyes",
+];
+
+function useSpinningName(active: boolean): string {
+  const [name, setName] = useState(SAMPLE_NAMES[0]);
+
+  useEffect(() => {
+    if (!active) return;
+    const interval = setInterval(() => {
+      setName(SAMPLE_NAMES[Math.floor(Math.random() * SAMPLE_NAMES.length)]);
+    }, 90);
+    return () => clearInterval(interval);
+  }, [active]);
+
+  return name;
+}
+
 export default function WinnerDrawModal({ phase, winner, error, onClose }: WinnerDrawModalProps) {
+  const spinningName = useSpinningName(phase === "spinning");
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
@@ -16,14 +49,8 @@ export default function WinnerDrawModal({ phase, winner, error, onClose }: Winne
             <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
               Eligiendo ganador…
             </p>
-            <div className="slot-window mt-4">
-              <div className="slot-track">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="slot-item">
-                    🎲
-                  </div>
-                ))}
-              </div>
+            <div className="spin-window mt-4 flex items-center justify-center rounded-xl bg-gray-50">
+              <span className="spin-name text-xl font-bold text-gray-800">{spinningName}</span>
             </div>
           </>
         )}
@@ -62,30 +89,21 @@ export default function WinnerDrawModal({ phase, winner, error, onClose }: Winne
       </div>
 
       <style jsx>{`
-        .slot-window {
+        .spin-window {
           height: 4rem;
           overflow: hidden;
-          border-radius: 0.75rem;
-          background: #f3f4f6;
         }
-        .slot-track {
-          display: flex;
-          flex-direction: column;
-          animation: slot-spin 0.6s linear infinite;
+        .spin-name {
+          animation: spin-fade 0.09s linear;
         }
-        .slot-item {
-          height: 4rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 2rem;
-        }
-        @keyframes slot-spin {
+        @keyframes spin-fade {
           from {
-            transform: translateY(0);
+            opacity: 0.3;
+            transform: translateY(-4px);
           }
           to {
-            transform: translateY(-64rem);
+            opacity: 1;
+            transform: translateY(0);
           }
         }
       `}</style>
