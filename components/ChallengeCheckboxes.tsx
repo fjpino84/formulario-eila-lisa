@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { CHALLENGE_OPTIONS, REQUIRED_SELECTIONS } from "@/lib/contest";
 
 interface ChallengeCheckboxesProps {
@@ -27,6 +28,17 @@ export default function ChallengeCheckboxes({ selected, onChange }: ChallengeChe
         </span>{" "}
         de las 5 opciones sospechosas.
       </p>
+
+      <div className="mt-6 flex flex-col items-center text-center">
+        <h4 className="text-base font-bold text-teal-800">Detecta el Fraude Visible</h4>
+        <Image
+          src="/boleta.png"
+          alt="Boleta de ejemplo con datos ficticios"
+          width={1080}
+          height={907}
+          className="mt-3 h-auto w-full max-w-sm rounded-lg border border-gray-200 shadow-sm"
+        />
+      </div>
 
       <div className="mt-4 space-y-3">
         {CHALLENGE_OPTIONS.map((option) => {
