@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ContestForm from "@/components/ContestForm";
 
 export default function ContestsPage() {
@@ -19,14 +20,15 @@ export default function ContestsPage() {
               sorteo de unos AirPods.
             </p>
           </div>
-          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-teal-700 via-teal-600 to-purple-800 p-10 text-white shadow-lg">
-            <p className="text-sm font-semibold uppercase tracking-wide text-teal-100">
-              LISA Insurtech
-            </p>
-            <p className="mt-4 text-2xl font-bold">Formulario de Participación</p>
-            <p className="mt-2 text-sm text-teal-100">
-              Gestión de Documentos con IA · Detección de Riesgo · Prevención de Fraude
-            </p>
+          <div className="flex items-center justify-center overflow-hidden rounded-2xl bg-gray-50 p-6 shadow-lg">
+            <Image
+              src="/airpods.png"
+              alt="AirPods Pro, premio del sorteo"
+              width={528}
+              height={572}
+              className="h-auto w-full max-w-sm"
+              priority
+            />
           </div>
         </div>
       </section>
