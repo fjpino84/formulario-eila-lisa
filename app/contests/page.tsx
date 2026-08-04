@@ -17,7 +17,7 @@ export default function ContestsPage() {
               Pon a prueba tu agudeza visual e identifica las 3 adulteraciones en la
               boleta de honorarios, y demuestra que eres un experto en la prevención del
               fraude. Si identificas las opciones correctas estarás participando por el
-              sorteo de unos AirPods.
+              sorteo de unos AirPods Pro 3.
             </p>
           </div>
           <div className="flex items-center justify-center">
