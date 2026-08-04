@@ -20,7 +20,7 @@ export default function ContestsPage() {
               sorteo de unos AirPods.
             </p>
           </div>
-          <div className="flex items-center justify-center overflow-hidden rounded-2xl bg-gray-50 p-6 shadow-lg">
+          <div className="flex items-center justify-center">
             <Image
               src="/airpods.png"
               alt="AirPods Pro, premio del sorteo"
