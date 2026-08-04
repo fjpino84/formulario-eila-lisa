@@ -7,7 +7,7 @@ export default function GraciasPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
           </svg>
         </div>
-        <h1 className="mt-6 text-4xl font-extrabold text-teal-800">Muchas gracias por Participar</h1>
+        <h1 className="mt-6 max-w-xl text-3xl font-extrabold text-teal-800 sm:text-4xl">Muchas gracias por Participar</h1>
         <p className="mt-3 max-w-2xl text-gray-600">
           Haz detectado el Fraude <span className="font-semibold text-purple-700">VISIBLE</span>, pero ¿sabías
           que este documento esconde más cosas?
