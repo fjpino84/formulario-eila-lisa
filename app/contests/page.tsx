@@ -20,7 +20,7 @@ export default function ContestsPage() {
               sorteo de unos <span className="font-semibold text-purple-700">AirPods Pro 3</span>.
             </p>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center">
             <Image
               src="/airpods.png"
               alt="AirPods Pro, premio del sorteo"
@@ -29,6 +29,9 @@ export default function ContestsPage() {
               className="h-auto w-full max-w-sm"
               priority
             />
+            <p className="mt-3 text-xs font-bold text-gray-700">
+              El sorteo se realizará el jueves 13 de agosto a las 15:30 en el stand 05.
+            </p>
           </div>
         </div>
       </section>
