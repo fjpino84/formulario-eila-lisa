@@ -12,6 +12,9 @@ export default function GraciasPage() {
           Haz detectado el Fraude <span className="font-semibold text-purple-700">VISIBLE</span>, pero ¿sabías
           que este documento esconde más cosas?
         </p>
+        <p className="mt-3 text-xs font-bold text-gray-700">
+          El sorteo se realizará el jueves 13 de agosto a las 15:30 en el stand 05.
+        </p>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">

@@ -87,6 +87,9 @@ function participantConfirmationHtml(fullName: string): string {
         Hola ${escapeHtml(fullName)}, haz detectado el Fraude <strong style="color:#6d28d9;">VISIBLE</strong>,
         pero ¿sabías que este documento esconde más cosas?
       </p>
+      <p style="font-size: 12px; font-weight: 700; color: #374151; margin: 12px auto 0;">
+        El sorteo se realizará el jueves 13 de agosto a las 15:30 en el stand 05.
+      </p>
     </div>
 
     <table role="presentation" width="100%" style="margin-top: 24px; border-collapse: collapse;">
